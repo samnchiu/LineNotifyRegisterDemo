@@ -1,0 +1,40 @@
+﻿
+<h1>@ViewData["Manage"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+<form method="post" action="/Home/SendAll">
+    <div class="form-group">
+        <label for="inputText">Input Text</label>
+        <input type="text" class="form-control" id="inputText" name="inputText" placeholder="Enter text here">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@if (ViewData["SendLogs"] != null)
+{
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Message</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in (List<SendLog>)ViewData["SendLogs"])
+            {
+                <tr>
+                    <td>@log.Id</td>
+                    <td>@log.sender</td>
+                    <td>@log.receiver</td>
+                    <td>@log.message</td>
+                    <td>@log.status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
