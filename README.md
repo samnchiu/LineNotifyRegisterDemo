@@ -1,0 +1,2 @@
+# LineNotifyRegisterDemo
+實作了一個LineLogin 以及LineNotify的MVC 範本站
