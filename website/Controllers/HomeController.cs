@@ -59,7 +59,7 @@ public class HomeController : BaseController
 
 
     [HttpPost]
-    public IActionResult ProcessData()
+    public async Task<IActionResult> ProcessData()
     {
         // 將 inputText 參數的值存儲到 ViewData 中
         // ViewData["Message"] = $"You entered: {inputText}";
@@ -68,6 +68,15 @@ public class HomeController : BaseController
         // return View("Index");
         if(_User.registed == true)//測消掉accesstoken
         {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://notify-api.line.me/api/revoke");
+            request.Headers.Add("Authorization", "Bearer "+_User.AccessToken);
+            _logger.LogInformation("希望撤銷的AccessToken:"+_User.AccessToken);
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            _logger.LogInformation(await response.Content.ReadAsStringAsync());
+
             _User.AccessToken = "";
             _User.registed = false;
             _User =  _context.UpdateLineUserAsync(_User).Result;
@@ -127,6 +136,19 @@ public class HomeController : BaseController
 
     public async Task<IActionResult> Logout()
     {
+
+        if(_User == null)
+        return RedirectToAction(nameof(Index));
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://notify-api.line.me/api/revoke");
+        request.Headers.Add("Authorization", "Bearer "+_User.AccessToken);
+        _logger.LogInformation("希望撤銷的AccessToken:"+_User.AccessToken);
+            
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        _logger.LogInformation(await response.Content.ReadAsStringAsync());
+
         _User.AccessToken = "";
         _User.registed = false;
         _User =  _context.UpdateLineUserAsync(_User).Result;
